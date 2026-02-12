@@ -1,0 +1,51 @@
+manifestVersion: 1
+id: calvin-evcc
+name: evcc
+tagline: Solar charging and home energy management for electric vehicles
+icon: ""
+category: Home & Automation
+version: "0.300.8"
+port: 7070
+description: >-
+  evcc is an extensible EV charge controller and home energy management system. It intelligently controls wallboxes and smart switches while communicating with vehicles, inverters, and home battery systems to optimize charging decisions. The software runs locally on your own hardware with no proprietary cloud dependency.
+
+
+  Here are some key features of evcc:
+
+
+  ☀️ Solar surplus charging: Charging starts automatically when enough solar power is available, with real-time power adjustment to maximize self-consumption.
+
+
+  🌿 Green grid charging: Charge during periods of high renewable energy availability on the grid, reducing costs and supporting the energy transition.
+
+
+  🔌 Broad device support: Works with 100+ chargers, vehicles, inverters, heat pumps, and smart meters from manufacturers like Tesla, BMW, Volkswagen, Porsche, Hyundai, and many more.
+
+
+  📊 Clean web interface: A responsive dashboard with light and dark modes gives you full visibility into your charging sessions and energy flows.
+
+
+  🔗 Smart home integration: Connects with Home Assistant, openHAB, and ioBroker. Offers REST and MQTT APIs for custom automation.
+
+
+  🔔 Notifications: Stay informed via Telegram, PushOver, and other notification services.
+
+
+  📈 Data logging: Compatible with InfluxDB and Grafana for detailed energy analytics and historical tracking.
+
+
+  🧩 Extensible plugin architecture: Supports Modbus, HTTP, MQTT, and JavaScript plugins for custom integrations.
+
+developer: evcc-io
+website: https://evcc.io
+submitter: CalvinWalzel
+submission: https://github.com/CalvinWalzel/umbrel-community-app-store
+repo: https://github.com/evcc-io/evcc
+support: https://github.com/evcc-io/evcc/issues
+gallery: []
+releaseNotes: >-
+  Initial release: version 0.300.8
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""

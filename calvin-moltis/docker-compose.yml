@@ -1,0 +1,56 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      # The format here is: <app-id>_<docker-service-name>_1
+      APP_HOST: calvin-moltis_moltis_1
+      APP_PORT: 13131
+      # Moltis has its own password/passkey auth; Umbrel's proxy auth would break API and WebSocket clients.
+      PROXY_AUTH_ADD: "false"
+
+  # Private Docker daemon for Moltis' sandbox containers. Unlike Portainer/Arcane it keeps its own
+  # network namespace (no network_mode: host, no host bridge), so its bridges and iptables rules die
+  # with the container. All of its state is bind-mounted under ${APP_DATA_DIR}, which umbrelOS
+  # deletes on uninstall; no named or anonymous volumes exist that `compose down` could leave behind.
+  docker:
+    image: docker:27.2.0-dind@sha256:f9f72ad901a78f27be922b2d320bbc263174f12919c1b37e6a01f828fa904565
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m
+    environment:
+      DOCKER_TLS_CERTDIR: ""
+    # Unix socket only (no TCP), group 1000 = the `docker` group of the Moltis image's user.
+    command: ["dockerd", "--host", "unix:///run/dind/docker.sock", "--group", "1000"]
+    healthcheck:
+      test: ["CMD", "docker", "--host", "unix:///run/dind/docker.sock", "info"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    volumes:
+      # Covers the image's VOLUME /var/lib/docker, which would otherwise create an orphaned anonymous volume.
+      - ${APP_DATA_DIR}/data/docker:/var/lib/docker
+      - ${APP_DATA_DIR}/data/docker-run:/run/dind
+      # Same path as in the moltis container, so sandbox bind mounts resolve inside this daemon.
+      - ${APP_DATA_DIR}/data/moltis:/home/moltis/.moltis
+
+  moltis:
+    image: ghcr.io/moltis-org/moltis:20261023.01@sha256:17cdb294521954ca0c4af37531018f79058138bdfc7b1bd5382a7a3027b3b4fd
+    restart: on-failure
+    depends_on:
+      docker:
+        condition: service_healthy
+    command: ["--bind", "0.0.0.0", "--port", "13131", "--no-tls"]
+    environment:
+      MOLTIS_NO_TLS: "true"
+      MOLTIS_BEHIND_PROXY: "true"
+      MOLTIS_PASSWORD: ${APP_PASSWORD}
+      DOCKER_HOST: unix:///run/dind/docker.sock
+      # Fail loudly instead of silently falling back to the unisolated restricted-host sandbox.
+      MOLTIS_TOOLS__EXEC__SANDBOX__BACKEND: docker
+      # Browser sandbox containers publish their ports inside the private daemon's network namespace.
+      MOLTIS_TOOLS__BROWSER__CONTAINER_HOST: calvin-moltis_docker_1
+    volumes:
+      - ${APP_DATA_DIR}/data/moltis:/home/moltis/.moltis
+      - ${APP_DATA_DIR}/data/config:/home/moltis/.config/moltis
+      - ${APP_DATA_DIR}/data/docker-run:/run/dind

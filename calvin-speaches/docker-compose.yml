@@ -10,11 +10,14 @@ services:
   # Other apps (e.g. Moltis) call the API directly at http://calvin-speaches_speaches_1:8000/v1,
   # bypassing app_proxy; the browser UI goes through app_proxy and Umbrel login.
   speaches:
-    image: ghcr.io/speaches-ai/speaches:0.8.3-cpu@sha256:21e3df06d842fb7802ab470dd77c25f0e8c0d22950e8d8c6ae886e851af53ef8
+    # 0.9 (still a release candidate) adds Parakeet support and PRELOAD_MODELS; 0.8.3 has neither.
+    image: ghcr.io/speaches-ai/speaches:0.9.0-rc.3-cpu@sha256:2163775b6df5e451a71200e8f675fed68dbd8ab184fc604453d549e486f22fd2
     restart: on-failure
     environment:
-      # Downloaded on first start (~1.6 GB); the app exits and retries if the download fails.
-      PRELOAD_MODELS: '["deepdml/faster-whisper-large-v3-turbo-ct2"]'
+      # Parakeet TDT v2 (English): more accurate than Whisper turbo and, unlike Whisper, doesn't pad every clip
+      # to 30 s, so short voice messages transcribe quickly on CPU. Downloaded on first start (~2.5 GB);
+      # the app exits and retries if the download fails.
+      PRELOAD_MODELS: '["istupakov/parakeet-tdt-0.6b-v2-onnx"]'
       # Keep the STT model loaded instead of unloading it after 5 idle minutes.
       STT_MODEL_TTL: "-1"
       # int8 runs on the CPU's VNNI instructions; float32 would be ~2x slower.

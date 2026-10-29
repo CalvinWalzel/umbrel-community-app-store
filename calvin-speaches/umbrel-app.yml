@@ -4,20 +4,20 @@ name: Speaches
 tagline: Local speech-to-text with an OpenAI-compatible API
 icon: https://raw.githubusercontent.com/CalvinWalzel/umbrel-community-app-store/main/gallery/calvin-speaches/logo.png
 category: ai
-version: "0.8.3"
+version: "0.9.0-rc.3"
 port: 8770
 description: >-
-  Speaches is an OpenAI API-compatible server for speech-to-text, powered by faster-whisper. Any app that speaks the
-  OpenAI audio API (POST /v1/audio/transcriptions) can use it for fully local transcription.
+  Speaches is an OpenAI API-compatible server for speech-to-text, powered by NVIDIA Parakeet and faster-whisper.
+  Any app that speaks the OpenAI audio API (POST /v1/audio/transcriptions) can use it for fully local transcription.
 
 
-  🎙️ Model: Whisper large-v3-turbo (int8, CPU) is downloaded on first start (~1.6 GB) and kept loaded, so the app
+  🎙️ Model: Parakeet TDT 0.6B v2 (English) is downloaded on first start (~2.5 GB) and kept loaded, so the app
   takes a few minutes to become ready after installing.
 
 
   🔌 Connecting other apps: Use http://calvin-speaches_speaches_1:8000/v1 as the base URL and
-  deepdml/faster-whisper-large-v3-turbo-ct2 as the model. For Moltis, configure "Whisper (Local)" under
-  Settings > Voice > Speech-to-Text.
+  istupakov/parakeet-tdt-0.6b-v2-onnx as the model. For Moltis, use "OpenAI Whisper" under
+  Settings > Voice > Speech-to-Text with that base URL and an empty API key.
 
 
   🧪 The web UI lets you test transcription in the browser.
@@ -29,7 +29,8 @@ repo: https://github.com/speaches-ai/speaches
 support: https://github.com/speaches-ai/speaches/issues
 gallery: []
 releaseNotes: >-
-  Initial release: Speaches 0.8.3 with Whisper large-v3-turbo
+  Switches to Speaches 0.9.0-rc.3 and the Parakeet TDT v2 model, which is faster and more accurate for English
+  than Whisper on CPU. The model now downloads automatically on first start.
 dependencies: []
 path: ""
 defaultUsername: ""

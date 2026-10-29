@@ -4,7 +4,7 @@ name: Speaches
 tagline: Local speech-to-text with an OpenAI-compatible API
 icon: https://raw.githubusercontent.com/CalvinWalzel/umbrel-community-app-store/main/gallery/calvin-speaches/logo.png
 category: ai
-version: "0.9.0-rc.3"
+version: "0.9.0-rc.3-patch.1"
 port: 8770
 description: >-
   Speaches is an OpenAI API-compatible server for speech-to-text, powered by NVIDIA Parakeet and faster-whisper.
@@ -29,8 +29,8 @@ repo: https://github.com/speaches-ai/speaches
 support: https://github.com/speaches-ai/speaches/issues
 gallery: []
 releaseNotes: >-
-  Switches to Speaches 0.9.0-rc.3 and the Parakeet TDT v2 model, which is faster and more accurate for English
-  than Whisper on CPU. The model now downloads automatically on first start.
+  Fixes transcription failing with "500 Internal Server Error" in apps like Moltis that request the verbose_json
+  response format, which Speaches' Parakeet support rejected.
 dependencies: []
 path: ""
 defaultUsername: ""

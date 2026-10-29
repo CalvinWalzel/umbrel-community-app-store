@@ -13,6 +13,17 @@ services:
     # 0.9 (still a release candidate) adds Parakeet support and PRELOAD_MODELS; 0.8.3 has neither.
     image: ghcr.io/speaches-ai/speaches:0.9.0-rc.3-cpu@sha256:2163775b6df5e451a71200e8f675fed68dbd8ab184fc604453d549e486f22fd2
     restart: on-failure
+    # Speaches' Parakeet executor rejects response_format=verbose_json with a 500, but Moltis (and other
+    # OpenAI clients) always request it. Serve it as plain json, which only lacks segments/timestamps.
+    # Fails to start instead of silently breaking if the patch no longer applies to the pinned image.
+    command:
+      - sh
+      - -c
+      - |
+        f=src/speaches/executors/parakeet.py
+        sed -i -e 's/("text", "json")/("text", "json", "verbose_json")/' -e 's/case "json":/case "json" | "verbose_json":/' "$$f"
+        grep -q '"json" | "verbose_json"' "$$f" || { echo "parakeet verbose_json patch failed" >&2; exit 1; }
+        exec uvicorn --factory speaches.main:create_app
     environment:
       # Parakeet TDT v2 (English): more accurate than Whisper turbo and, unlike Whisper, doesn't pad every clip
       # to 30 s, so short voice messages transcribe quickly on CPU. Downloaded on first start (~2.5 GB);

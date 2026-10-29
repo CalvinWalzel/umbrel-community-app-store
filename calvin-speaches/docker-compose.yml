@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      # The format here is: <app-id>_<docker-service-name>_1
+      APP_HOST: calvin-speaches_speaches_1
+      APP_PORT: 8000
+
+  # Other apps (e.g. Moltis) call the API directly at http://calvin-speaches_speaches_1:8000/v1,
+  # bypassing app_proxy; the browser UI goes through app_proxy and Umbrel login.
+  speaches:
+    image: ghcr.io/speaches-ai/speaches:0.8.3-cpu@sha256:21e3df06d842fb7802ab470dd77c25f0e8c0d22950e8d8c6ae886e851af53ef8
+    restart: on-failure
+    environment:
+      # Downloaded on first start (~1.6 GB); the app exits and retries if the download fails.
+      PRELOAD_MODELS: '["deepdml/faster-whisper-large-v3-turbo-ct2"]'
+      # Keep the STT model loaded instead of unloading it after 5 idle minutes.
+      STT_MODEL_TTL: "-1"
+      # int8 runs on the CPU's VNNI instructions; float32 would be ~2x slower.
+      WHISPER__COMPUTE_TYPE: int8
+      WHISPER__CPU_THREADS: "8"
+      LOG_LEVEL: info
+    volumes:
+      - ${APP_DATA_DIR}/data/hf-cache:/home/ubuntu/.cache/huggingface/hub

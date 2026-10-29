@@ -48,6 +48,9 @@ services:
       DOCKER_HOST: unix:///run/dind/docker.sock
       # Fail loudly instead of silently falling back to the unisolated restricted-host sandbox.
       MOLTIS_TOOLS__EXEC__SANDBOX__BACKEND: docker
+      # The default ("ro") mounts the whole data dir into every sandbox, and moltis.db stores login
+      # session tokens in plaintext, so sandboxed commands could hijack a session.
+      MOLTIS_TOOLS__EXEC__SANDBOX__WORKSPACE_MOUNT: none
       # Browser sandbox containers publish their ports inside the private daemon's network namespace.
       MOLTIS_TOOLS__BROWSER__CONTAINER_HOST: calvin-moltis_docker_1
     volumes:

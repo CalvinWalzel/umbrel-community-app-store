@@ -4,7 +4,7 @@ name: Moltis
 tagline: A secure, persistent personal AI agent server
 icon: https://raw.githubusercontent.com/CalvinWalzel/umbrel-community-app-store/main/gallery/calvin-moltis/logo.svg
 category: ai
-version: "20261023.01"
+version: "20261023.01-patch.1"
 port: 13131
 description: >-
   Moltis is a persistent personal agent server written in Rust. It connects to many LLM providers (including
@@ -35,7 +35,8 @@ repo: https://github.com/moltis-org/moltis
 support: https://github.com/moltis-org/moltis/issues
 gallery: []
 releaseNotes: >-
-  Initial release: Moltis 20261023.01
+  Sandboxed commands no longer get a read-only view of Moltis' data folder, which contains login sessions.
+  Files you share through Settings > Files are still available in the sandbox.
 dependencies: []
 path: ""
 defaultUsername: ""

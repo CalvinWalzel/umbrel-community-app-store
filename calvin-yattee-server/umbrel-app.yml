@@ -1,0 +1,35 @@
+manifestVersion: 1.1
+id: calvin-yattee-server
+name: Yattee Server
+tagline: A self-hosted yt-dlp backend for the Yattee video apps
+icon: https://raw.githubusercontent.com/CalvinWalzel/umbrel-community-app-store/main/gallery/calvin-yattee-server/logo.png
+category: media
+version: "1.0.10"
+port: 8085
+description: >-
+  Yattee Server is a self-hosted API server powered by yt-dlp for the Yattee video player on iPhone, iPad, Apple TV
+  and Mac. It extracts videos from YouTube and 1000+ other sites, keeps your channel subscriptions in a feed, and can
+  proxy streams so the video sites only see your Umbrel.
+
+
+  📱 Connecting Yattee: In the Yattee app, add a Yattee Server source with http://umbrel.local:8085 (or your
+  Umbrel's IP address), username "umbrel" and the password shown by umbrelOS for this app. Outside your home
+  network, use your Umbrel's Tailscale address instead.
+
+
+  🔒 Login: Yattee Server has its own login, so umbrelOS doesn't ask for its password when you open it. The admin
+  panel at /admin uses the same username and password and lets you add more users, site cookies and an Invidious
+  instance.
+developer: Yattee
+website: https://yattee.stream
+submitter: CalvinWalzel
+submission: https://github.com/CalvinWalzel/umbrel-community-app-store
+repo: https://github.com/yattee/yattee-server
+support: https://github.com/yattee/yattee-server/issues
+gallery: []
+releaseNotes: ""
+dependencies: []
+path: "/admin"
+defaultUsername: "umbrel"
+defaultPassword: ""
+deterministicPassword: true

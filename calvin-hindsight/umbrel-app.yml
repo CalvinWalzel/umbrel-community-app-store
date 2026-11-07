@@ -1,0 +1,44 @@
+manifestVersion: 1.1
+id: calvin-hindsight
+environment:
+  - name: HINDSIGHT_API_LLM_API_KEY
+    services:
+      - hindsight
+    note: >-
+      Required. Your Anthropic API key (sk-ant-...), used for extracting and consolidating memories with Claude.
+name: Hindsight
+tagline: Long-term memory for AI agents
+icon: https://raw.githubusercontent.com/CalvinWalzel/umbrel-community-app-store/main/gallery/calvin-hindsight/logo.png
+category: ai
+version: "1.2.0"
+port: 9999
+description: >-
+  Hindsight is a memory system for AI agents. Agents retain facts and experiences, recall them later and reflect on
+  them, through a REST API, an MCP server, or integrations such as the Claude Code plugin. Everything is stored in an
+  embedded Postgres database inside this app.
+
+
+  🔑 Anthropic API key (required): Hindsight uses Claude (Haiku 5.5) to extract and consolidate memories. After
+  installing, set HINDSIGHT_API_LLM_API_KEY under App Settings > Advanced > Environment variables. Until then the app
+  waits and won't open.
+
+
+  🔌 Connecting agents: The API and MCP server are at http://umbrel.local:8888 (or your Umbrel's IP or Tailscale
+  address). Every request needs the header "Authorization: Bearer <password>", using the password umbrelOS shows for
+  this app.
+
+
+  🖥️ The web UI (Control Plane) lets you browse memory banks, entities and stored memories.
+developer: Vectorize
+website: https://hindsight.vectorize.io
+submitter: CalvinWalzel
+submission: https://github.com/CalvinWalzel/umbrel-community-app-store
+repo: https://github.com/vectorize-io/hindsight
+support: https://github.com/vectorize-io/hindsight/issues
+gallery: []
+releaseNotes: ""
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+deterministicPassword: true

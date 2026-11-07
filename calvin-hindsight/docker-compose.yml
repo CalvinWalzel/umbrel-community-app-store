@@ -1,0 +1,44 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      # The format here is: <app-id>_<docker-service-name>_1
+      # Only the Control Plane UI goes through app_proxy (and Umbrel's login).
+      APP_HOST: calvin-hindsight_hindsight_1
+      APP_PORT: 9999
+
+  hindsight:
+    image: ghcr.io/vectorize-io/hindsight:1.2.0@sha256:19d0c08f3df79acac29384826419a1ca158129e81ec527cdcbd8c97ff4ef76da
+    restart: on-failure
+    # start-all.sh waits up to 60s for workers and the embedded Postgres to shut down cleanly.
+    stop_grace_period: 75s
+    shm_size: 1g
+    # HINDSIGHT_API_LLM_API_KEY is set by the user in App Settings > Advanced > Environment variables
+    # (declared in umbrel-app.yml). Without it the container idles with a hint in its logs instead of
+    # crash-looping on Hindsight's startup LLM check.
+    command:
+      - bash
+      - -c
+      - |
+        if [ -z "$$HINDSIGHT_API_LLM_API_KEY" ]; then
+          echo "No Anthropic key: set HINDSIGHT_API_LLM_API_KEY in App Settings > Advanced > Environment variables" >&2
+          trap 'exit 0' TERM
+          sleep infinity & wait $$!
+        fi
+        exec /app/start-all.sh
+    ports:
+      # API and MCP endpoint, for clients like Claude Code. Bearer auth with the app password.
+      - "8888:8888"
+    environment:
+      HINDSIGHT_API_LLM_PROVIDER: anthropic
+      HINDSIGHT_API_LLM_MODEL: claude-haiku-5-5
+      # Every API and MCP request needs "Authorization: Bearer <app password>".
+      HINDSIGHT_API_TENANT_EXTENSION: hindsight_api.extensions.builtin.tenant:ApiKeyTenantExtension
+      HINDSIGHT_API_TENANT_API_KEY: ${APP_PASSWORD}
+      HINDSIGHT_CP_DATAPLANE_API_KEY: ${APP_PASSWORD}
+      # Stable worker identity, so tasks claimed before a restart aren't orphaned (defaults to the hostname).
+      HINDSIGHT_API_WORKER_ID: umbrel
+    volumes:
+      # Embedded Postgres (pg0). The image runs as UID 1000, which owns app-data on umbrelOS.
+      - ${APP_DATA_DIR}/data/pg0:/home/hindsight/.pg0
